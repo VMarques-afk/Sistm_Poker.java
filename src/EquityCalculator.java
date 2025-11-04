@@ -15,7 +15,7 @@ public class EquityCalculator {
 
     public double calcularEquidade(List<Carta> maoHeroi, List<Carta> cartasDaMesa, int numeroDeSimulacoes) {
 
-        List<Carta> cartasConhecidas = new ArrayList<>();
+        List<Carta> cartasConhecidas = new ArrayList<>(maoHeroi);
         cartasConhecidas.addAll(cartasDaMesa);
 
         int vitoriasHeroi = 0;

@@ -32,16 +32,14 @@ public class OutsCalculator {
             List<Carta> maoFutura = new ArrayList<>(cartasConhecidas);
             maoFutura.add(proximaCarta);
 
-            /* int forcaFutura = avaliador.avaliarMao(maoFutura).getForca(); */
             ResultadoMao resultadoFuturo = avaliador.avaliarMao(maoFutura);
 
-            /* if (forcaFutura > forcaAtual) {
-                contagemDeOuts++; */
-            if (resultadoFuturo.compareTo(resultadoAtual) > 0) {
-            contagemDeOuts++;
-
+            if(resultadoFuturo.getTipoMao().getForca() > resultadoAtual.getTipoMao().getForca()) {
+                contagemDeOuts++;
             }
 
+            /*if (resultadoFuturo.compareTo(resultadoAtual) > 0) {
+            contagemDeOuts++;*/
         }
 
         return contagemDeOuts;

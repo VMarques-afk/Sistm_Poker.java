@@ -1,5 +1,3 @@
-import jdk.jshell.spi.ExecutionControl;
-
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -35,8 +33,6 @@ public class HandEvaluator {
         resultado = identificarUmPar(contagemDeValores, valoresOrdenados);
         if (resultado != null) return resultado;
 
-        /*resultado = identificarPar(contagemDeValores, valoresOrdenados);
-        if (resultado != null) return resultado; */
 
         return identificarCartaAlta(valoresOrdenados);
     }
@@ -58,20 +54,6 @@ public class HandEvaluator {
         return contagem;
     }
 
-    /*private List<Valor> getKickers(List<Valor> valoresOrdenados, Valor valorDaMao, int numKickers) {
-        List<Valor> kickers = new ArrayList<>();
-        for (Valor v : valoresOrdenados) {
-            if (v != valorDaMao) {
-                kickers.add(v);
-                if (kickers.size() == numKickers) {
-                    break;
-                }
-            }
-        }
-        return kickers;
-    }
-    removido pois gerava conflito no codigo
-    */
 
     private List<Valor> getKickers(List<Valor> valoresOrdenados, List<Valor> valoresIgnorar, int numKickers) {
         List<Valor> kickers = new ArrayList<>();
@@ -96,42 +78,11 @@ public class HandEvaluator {
 
     private ResultadoMao identificarCartaAlta(List<Valor> valoresOrdenados) {
 
-        List<Valor> kickers = valoresOrdenados.subList(0, 5);
+        int numKickers = Math.min(valoresOrdenados.size(), 5);
+        List<Valor> kickers = valoresOrdenados.subList(0, numKickers);
         return new ResultadoMao(TipoMao.CARTA_ALTA, kickers);
     }
 
-    /*private List<Valor> getKickers(List<Valor> valoresOrdenados, Valor valorDaMao, int numKickers) {
-        List<Valor> kickers = new ArrayList<>();
-        for (Valor v : valoresOrdenados) {
-            if (v != valorDaMao) {
-                kickers.add(v);
-                if (kickers.size() == numKickers) {
-                    break;
-                }
-            }
-        }
-        return kickers;
-    }
-     */
-
-    /*private ResultadoMao identificarUmPar(Map<Valor, Integer> contagem, List<Valor> valoresOrdenados) {
-        if (!contagem.containsValue(2) || contagem.containsValue(3) || contagem.values().stream().filter(c-> c ==2).count() > 1) {
-            return null;
-        }
-
-        Valor valorDoPar = null;
-        for (Map.Entry<Valor, Integer> entry : contagem.entrySet()) {
-            if (entry.getValue() == 2) {
-                valorDoPar = entry.getKey();
-                break;
-            }
-        }
-        List<Valor> maoFinal = new ArrayList<>();
-        maoFinal.add(valorDoPar);
-        maoFinal.addAll(getKickers(valoresOrdenados, valorDoPar, 3));
-
-        return new ResultadoMao(TipoMao.UM_PAR, maoFinal);
-    }*/
 
     private ResultadoMao identificarUmPar(Map<Valor, Integer> contagem, List<Valor> valoresOrdenados) {
 
@@ -152,8 +103,12 @@ public class HandEvaluator {
         List<Valor> maoFinal = new ArrayList<>();
         maoFinal.add(valorDoPar);
 
-        maoFinal.addAll(getKickers(valoresOrdenados, List.of(valorDoPar), 3));
-
+        int kickersNecessarios = 3;
+        int kickersDisponiveis = valoresOrdenados.size() - 2;
+        int numKickers = Math.min(kickersNecessarios, kickersDisponiveis);
+        if(numKickers > 0) {
+            maoFinal.addAll(getKickers(valoresOrdenados, List.of(valorDoPar), numKickers));
+        }
         return new ResultadoMao(TipoMao.UM_PAR, maoFinal);
     }
 
@@ -173,7 +128,12 @@ public class HandEvaluator {
         List<Valor> maoFinal = new ArrayList<>();
 
         maoFinal.add(valorDaTrinca);
-        maoFinal.addAll(getKickers(valoresOrdenados, List.of(valorDaTrinca), 2));
+        int kickersNecessarios = 2;
+        int kickersDisponiveis = valoresOrdenados.size() - 3;
+        int numKickers = Math.min(kickersNecessarios, kickersDisponiveis);
+        if (numKickers > 0) {
+            maoFinal.addAll(getKickers(valoresOrdenados, List.of(valorDaTrinca), numKickers));
+        }
         return new ResultadoMao(TipoMao.TRINCA, maoFinal);
 
         } else {
@@ -211,53 +171,12 @@ public class HandEvaluator {
         
         if (kicker != null) {
             maoFinal.add(kicker);   
-        } else if (!valoresOrdenados.isEmpty()) {
+        } else if (!valoresOrdenados.isEmpty() && valoresDosPares.size() > 2) {
             maoFinal.add(valoresDosPares.get(2));
         }
 
         return new ResultadoMao(TipoMao.DOIS_PARES, maoFinal);
     }
-/*
-        Valor parAlto = valoresDosPares.get(0);
-        Valor parBaixo = valoresDosPares.get(1);
-
-        List<Valor> maoFinal = new ArrayList<>();
-        maoFinal.add(parAlto);
-        maoFinal.add(parBaixo);
-
-        List<Valor> tempValores = new ArrayList<>(valoresOrdenados);
-
-        tempValores.remove(parAlto);
-        tempValores.remove(parAlto);
-
-        tempValores.remove(parBaixo);
-        tempValores.remove(parBaixo);
-
-
-        Map<Valor, Integer> remainingCoutns = new HashMap<>();
-        for (Valor v : tempValores) {
-            remainingCoutns.put(v, remainingCoutns.getOrDefault(v, 0) + 1);
-        }
-
-        Valor kicker = null;
-        for (Valor v : tempValores) {
-            if (remainingCoutns.get(v) == 1) {
-                break;
-            }
-        }
-
-        if (kicker == null && !tempValores.isEmpty()) {
-            kicker = tempValores.get(0);
-        }
-
-        if (kicker != null) {
-            maoFinal.add(kicker);
-
-        }
-
-        return new ResultadoMao(TipoMao.DOIS_PARES, maoFinal);
-
-    }*/
 
     private ResultadoMao identificarStraight(Map<Valor, Integer> contagem) {
 
@@ -320,9 +239,10 @@ public class HandEvaluator {
                 .sorted(Comparator.comparingInt(Valor::getValorNumerico).reversed())
                 .collect(Collectors.toList());
 
-        List<Valor> maoFinal = valoresDoFlush.subList(0, 5);
+        int maxKickers = Math.min(valoresDoFlush.size(), 5);
+        List<Valor> kickers = valoresDoFlush.subList(0, maxKickers);
 
-        return new ResultadoMao(TipoMao.FLUSH, maoFinal);
+        return new ResultadoMao(TipoMao.FLUSH, kickers);
     }
 
     private ResultadoMao identificarFullHouse(Map<Valor, Integer> contagem) {
@@ -376,7 +296,12 @@ public class HandEvaluator {
         List<Valor> maoFinal = new ArrayList<>();
         maoFinal.add(valorDaQuadra);
 
-        maoFinal.addAll(getKickers(valoresOrdenados, List.of(valorDaQuadra), 1));
+        int kickersNecessarios = 1;
+        int kickersDisponiveis = valoresOrdenados.size() - 4;
+        int numKickers = Math.min(kickersNecessarios,  kickersDisponiveis);
+        if (numKickers > 0) {
+            maoFinal.addAll(getKickers(valoresOrdenados, List.of(valorDaQuadra), numKickers));
+        }
 
         return new ResultadoMao(TipoMao.QUADRA, maoFinal);
     }
