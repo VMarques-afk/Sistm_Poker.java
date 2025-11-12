@@ -2,45 +2,28 @@ import java.util.HashMap;
 import java.util.Map;
 
     public class GtoAdvisor {
-
-        // --- O CÉREBRO GTO ---
         // Usamos um "Mapa de Mapas" para guardar a tabela.
-        // Mapa 1: Key = Posição (ex: UTG)
-        // Mapa 2: Key = Mão (ex: "AA"), Value = Ação (ex: RAISE)
         private Map<Posicao, Map<String, AcaoGTO>> tabelasGTO;
 
-        /**
-         * Construtor que carrega nossas tabelas na memória.
-         */
         public GtoAdvisor() {
             this.tabelasGTO = new HashMap<>();
             carregarTabelas(); // Chama o método que preenche os dados
         }
+        //Método principal: O usuário pergunta o que fazer.
 
-        /**
-         * Método principal: O usuário pergunta o que fazer.
-         */
-        public AcaoGTO getAcao(Posicao posicao, PreflopHand mao) {
-            // 1. Pega a tabela correta para a posição (ex: tabela do UTG)
+        public AcaoGTO getAcao(Posicao posicao, String notacaoMao) {
+
             Map<String, AcaoGTO> tabelaDaPosicao = tabelasGTO.get(posicao);
 
-            // 2. Pega a notação da mão (ex: "AKs")
-            String notacaoMao = mao.getNotacao();
-
-            // 3. Procura a ação na tabela.
-            // Se não encontrar (ex: mão 72o não está na tabela de Raise),
-            // a ação padrão é FOLD.
-            return tabelaDaPosicao.getOrDefault(notacaoMao, AcaoGTO.FOLD);
+            if (tabelaDaPosicao == null) {
+                return AcaoGTO.FOLD;
+            }
+                return tabelaDaPosicao.getOrDefault(notacaoMao, AcaoGTO.FOLD);
         }
 
-        /**
-         * Método privado onde "ensinamos" as tabelas ao cérebro.
-         * (Isto é só um EXEMPLO PEQUENO para a posição UTG)
-         */
         private void carregarTabelas() {
-            // --- Tabela para Posição: UTG (Under the Gun) ---
+            // --- Tabela para Posição: UTG (Under the Gun)
             Map<String, AcaoGTO> tabelaUTG = new HashMap<>();
-
             // Pares que damos RAISE
             tabelaUTG.put("AA", AcaoGTO.RAISE);
             tabelaUTG.put("KK", AcaoGTO.RAISE);
@@ -52,21 +35,20 @@ import java.util.Map;
             tabelaUTG.put("77", AcaoGTO.RAISE);
 
             // Mãos "Suited" que damos RAISE
-            tabelaUTG.put("AKs", AcaoGTO.RAISE);
-            tabelaUTG.put("AQs", AcaoGTO.RAISE);
-            tabelaUTG.put("AJs", AcaoGTO.RAISE);
-            tabelaUTG.put("ATs", AcaoGTO.RAISE);
-            tabelaUTG.put("KQs", AcaoGTO.RAISE);
+            tabelaUTG.put("AKS", AcaoGTO.RAISE);
+            tabelaUTG.put("AQS", AcaoGTO.RAISE);
+            tabelaUTG.put("AJS", AcaoGTO.RAISE);
+            tabelaUTG.put("ATS", AcaoGTO.RAISE);
+            tabelaUTG.put("KQS", AcaoGTO.RAISE);
 
             // Mãos "Offsuit" que damos RAISE
-            tabelaUTG.put("AKo", AcaoGTO.RAISE);
-            tabelaUTG.put("AQo", AcaoGTO.RAISE);
+            tabelaUTG.put("AKO", AcaoGTO.RAISE);
+            tabelaUTG.put("AQO", AcaoGTO.RAISE);
 
-            // Adiciona a tabela de UTG preenchida ao nosso cérebro principal
             this.tabelasGTO.put(Posicao.UTG, tabelaUTG);
 
-            // TODO: Adicionar as tabelas para as outras posições (MP, CO, BTN, SB, BB)
-            // Por enquanto, elas ficarão vazias (resultando em FOLD).
+            // Adiciona as tabelas para as outras posições (MP, CO, BTN, SB, BB)
+
         }
     }
 

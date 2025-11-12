@@ -34,7 +34,7 @@ public class Main {
 
         PreflopHand maoPreFlop = new PreflopHand(heroiC1, heroiC2);
 
-        AcaoGTO acaoRecomendada = advisorGTO.getAcao(posicao, maoPreFlop);
+        AcaoGTO acaoRecomendada = advisorGTO.getAcao(posicao, maoPreFlop.getNotacao());
 
         System.out.println("=================================");
         System.out.println("Posição " + posicao);
