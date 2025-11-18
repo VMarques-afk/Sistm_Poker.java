@@ -32,9 +32,9 @@ public class PreflopHand {
         if (this.isPair) {
             return vAltoStr + vBaixoStr;
         } else if (this.isSuited) {
-            return vAltoStr + vBaixoStr + "s";
+            return vAltoStr + vBaixoStr + "S";
         } else {
-            return vAltoStr + vBaixoStr + "o";
+            return vAltoStr + vBaixoStr + "O";
         }
 
     }

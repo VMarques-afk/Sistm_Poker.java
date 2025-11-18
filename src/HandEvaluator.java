@@ -1,5 +1,12 @@
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.List;
+import java.util.Comparator;
+import java.util.Collections;
+import java.util.Map;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Set;
 
 public class HandEvaluator {
 
@@ -11,6 +18,9 @@ public class HandEvaluator {
         List<Valor> valoresOrdenados = getValoresOrdenados(cartas);
 
         ResultadoMao resultado;
+
+        resultado = identificarStraightFlush(contagemDeNaipes, cartas);
+        if (resultado != null) return resultado;
 
         resultado = identificarQuadra(contagemDeValores, valoresOrdenados);
         if (resultado != null) return resultado;
@@ -306,5 +316,70 @@ public class HandEvaluator {
         return new ResultadoMao(TipoMao.QUADRA, maoFinal);
     }
 
+    private ResultadoMao identificarStraightFlush(Map<Naipe, Integer> contagemNaipes, List<Carta> cartas){
 
+        Naipe naipeDoFlush = null;
+        for (Map.Entry<Naipe, Integer> entry : contagemNaipes.entrySet()){
+            if(entry.getValue() >= 5) {
+                naipeDoFlush = entry.getKey();
+                break;
+            }
+        }
+        if (naipeDoFlush == null) {
+            return null;
+        }
+
+        final Naipe naipeFinal = naipeDoFlush;
+        List<Carta> cartasDoFlush = cartas.stream()
+                .filter(carta -> carta.getNaipe() == naipeFinal)
+                .collect(Collectors.toList());
+
+        List<Valor> sequencia = findStraightInList(cartasDoFlush);
+
+        if (sequencia == null){
+            return null;
+        }
+
+        if (sequencia.get(0) == Valor.AS && sequencia.get(1) == Valor.REI) {
+            return new ResultadoMao(TipoMao.ROYAL_FLUSH, sequencia);
+        } else {
+            return new ResultadoMao(TipoMao.STRAIGHT_FLUSH, sequencia);
+        }
+    }
+
+
+    private List<Valor> findStraightInList(List<Carta> cartasFiltradas) {
+        if (cartasFiltradas.size() < 5) {
+            return null;
+        }
+
+        List<Integer> valoresNumericos = cartasFiltradas.stream()
+                .map(carta -> carta.getValor().getValorNumerico())
+                .distinct()
+                .sorted()
+                .collect(Collectors.toList());
+
+        if (valoresNumericos.containsAll(List.of(2, 3, 4, 5, 14))) {
+            return List.of(Valor.CINCO, Valor.QUATRO, Valor.TRES, Valor.DOIS, Valor.AS);
+        }
+
+        for (int i = valoresNumericos.size() - 1; i >= 4; i--) {
+            int v1 = valoresNumericos.get(i);
+            int v2 = valoresNumericos.get(i - 1);
+            int v3 = valoresNumericos.get(i - 2);
+            int v4 = valoresNumericos.get(i - 3);
+            int v5 = valoresNumericos.get(i - 4);
+
+            if (v1 == v2 + 1 && v2 == v3 + 1 && v3 == v4 + 1 && v4 == v5 + 1 ) {
+                return List.of(
+                        Valor.values()[v1 - 2],
+                        Valor.values()[v2 - 2],
+                        Valor.values()[v3 - 2],
+                        Valor.values()[v4 - 2],
+                        Valor.values()[v5 - 2]
+                );
+            }
+        }
+        return null;
+    }
 }

@@ -102,7 +102,6 @@ public class Main {
 
     }
 
-
     private static Valor pedirValor (Scanner scanner, String prompt) {
         while (true) {
             System.out.println(prompt);
@@ -175,12 +174,18 @@ public class Main {
         System.out.println("=================================================");
 
         if (cartasDaMesa.size() < 5) {
-            int outs = calcOuts.calcularOuts(maoHeroi, cartasDaMesa);
-            int chanceProximaCarta = outs * 2;
-            int chanceAteRiver = (cartasDaMesa.size() == 3) ? (outs * 4) : chanceProximaCarta;
+
+            DrawAnalysis analiseOuts = calcOuts.calcularDraws(maoHeroi, cartasDaMesa);
+            String resumoOuts = analiseOuts.getResumo();
+
+            int totalUnicoOuts = analiseOuts.getTotalUnicoOuts();
+
+
+            int chanceProximaCarta = totalUnicoOuts * 2;
+            int chanceAteRiver = (cartasDaMesa.size() == 3) ? (totalUnicoOuts * 4) : chanceProximaCarta;
 
             System.out.println("MODULO 2 (Potencial de melhora):");
-            System.out.println(" Outs (cartas que melhoram o TIPO da mão):" + outs);
+            System.out.println(" Outs (cartas que melhoram o TIPO da mão):" + totalUnicoOuts);
             if (cartasDaMesa.size() == 3) {
                 System.out.println("Chance de melhorar no turn: aprox." + chanceProximaCarta + "%");
                 System.out.println("Chance de melhorar até o River: aprox. " + chanceAteRiver + "%");

@@ -9,7 +9,7 @@ import java.util.Map;
             this.tabelasGTO = new HashMap<>();
             carregarTabelas(); // Chama o método que preenche os dados
         }
-        //Método principal: O usuário pergunta o que fazer.
+        //Metodo principal: O usuario pergunta o que fazer.
 
         public AcaoGTO getAcao(Posicao posicao, String notacaoMao) {
 
