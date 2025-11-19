@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Sistm_Poker.java:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Sistm_Poker_java_jar</output-path>
+    <root id="archive" name="Sistm_Poker.java.jar">
+      <element id="module-output" name="Sistm_Poker.java" />
+    </root>
+  </artifact>
+</component>
