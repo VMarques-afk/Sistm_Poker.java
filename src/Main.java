@@ -133,6 +133,7 @@ public class Main {
         Valor valor = pedirValor(scanner, " Valor(AS, REI, DAMA, VALETE, 2, 3, 4....): ");
         Naipe naipe = pedirNaipe(scanner, "Naipe (COPAS, PAUS, OUROS, ESPADAS): ");
         return new Carta(naipe, valor);
+
     }
 
     private static  Posicao pedirPosicao(Scanner scanner, String prompt) {

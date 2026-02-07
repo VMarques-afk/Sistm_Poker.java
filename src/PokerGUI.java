@@ -124,6 +124,7 @@ public class PokerGUI {
                     labelResultadoGTO.setText("ERRO: Verifique a posição ou formato das cartas");
                 }
 
+                return 0;
             }
         });
 
@@ -189,6 +190,7 @@ public class PokerGUI {
                 } catch (Exception ex) {
                     labelResultadoPosFlop.setText("ERRO: " + ex.getMessage());
                 }
+                return 0;
             }
         });
 
@@ -200,4 +202,5 @@ public class PokerGUI {
         janela.setLocationRelativeTo(null);
         janela.setVisible(true);
     }
+
 }
