@@ -2,7 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
+
 
 public class StackMoney {
 
@@ -13,8 +13,8 @@ public class StackMoney {
         janela.setSize(400, 300);
         janela.setLayout(new BorderLayout(10, 10));
 
-        JPanel stackHeroi;
-        stackHeroi = new JPanel(new GridLayout(4, 2, 5, 5));
+        JPanel valorStackHeroi;
+        valorStackHeroi = new JPanel(new GridLayout(4, 2, 5, 5));
 
         JLabel poteHeroi = new JLabel("Pote do Herói: ");
         JTextField campoPoteHeroi = new JTextField(5);
@@ -27,43 +27,43 @@ public class StackMoney {
 
         JButton botaoAnalisePoteTotal = new JButton("Calcular Pote:");
 
-        stackHeroi.add(poteHeroi);
-        stackHeroi.add(campoPoteHeroi);
+        valorStackHeroi.add(poteHeroi);
+        valorStackHeroi.add(campoPoteHeroi);
 
-        stackHeroi.add(poteVilao);
-        stackHeroi.add(campoPoteVilao);
+        valorStackHeroi.add(poteVilao);
+        valorStackHeroi.add(campoPoteVilao);
 
-        stackHeroi.add(poteAtualMesa);
-        stackHeroi.add(campoPoteMesa);
+        valorStackHeroi.add(poteAtualMesa);
+        valorStackHeroi.add(campoPoteMesa);
 
-        stackHeroi.add(botaoAnalisePoteTotal);
-        stackHeroi.add(new JPanel());
+        valorStackHeroi.add(botaoAnalisePoteTotal);
+        valorStackHeroi.add(new JPanel());
+
+        janela.add(valorStackHeroi, BorderLayout.CENTER);
 
 
         botaoAnalisePoteTotal.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
-                    double stackHeroi = Double.parseDouble(campoPoteHeroi.getText());
+                    double valorStackHeroi = Double.parseDouble(campoPoteHeroi.getText());
                     double stackVilao = Double.parseDouble(campoPoteVilao.getText());
                     double poteMesa = Double.parseDouble(campoPoteMesa.getText());
 
-
-                    double min = Math.min(stackHeroi, stackVilao);
-
-                    try {
-                        double spr = min / poteMesa;
+                    double min = Math.min(valorStackHeroi, stackVilao);
+                    double spr = min / poteMesa;
 
 
-                        resultadoFinal += String.format(" ")
+                    String resultado = String.format("Stack: $%.2f", spr);
+                    JOptionPane.showMessageDialog(janela, resultado, "Resultado:", JOptionPane.INFORMATION_MESSAGE);
 
-                    } catch (Exception ex) {
-                        JOptionPane.showMessageDialog();
-                    }
-
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(janela, "Digite somente números", "ERRO" ,JOptionPane.ERROR_MESSAGE);
                 }
 
             }
-        }
+
+        });
+        janela.setVisible(true);
 
     }
 }

@@ -20,7 +20,7 @@ public class PokerGUI {
         JFrame janela = new JFrame("Meu Assistente de Poker");
         janela.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         janela.setSize(800, 600);
-        janela.setLayout(new BorderLayout(10,10));
+        janela.setLayout(new BorderLayout(10, 10));
 
         JPanel painelPreFlop;
         painelPreFlop = new JPanel(new GridLayout(4, 2, 5, 5));
@@ -94,7 +94,7 @@ public class PokerGUI {
         botaoAnalisarPreFlop.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                try{
+                try {
 
                     String textoPosicao = campoPosicao.getText().trim().toUpperCase();
                     String textoC1 = campoHeroi1.getText().trim();
@@ -124,11 +124,86 @@ public class PokerGUI {
                     labelResultadoGTO.setText("ERRO: Verifique a posição ou formato das cartas");
                 }
 
-                return 0;
             }
         });
 
         botaoAnalisarPostFlop.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                botaoAnalisarPostFlop.setEnabled(false);
+                labelResultadoPosFlop.setText("Calculando... Aguarde.");
+
+                SwingWorker<String, Void> worker = new SwingWorker<String, Void>() {
+                    @Override
+                    protected String doInBackground() throws Exception {
+
+                        Carta c1 = CardParser.parse(campoHeroi1.getText());
+                        Carta c2 = CardParser.parse(campoHeroi2.getText());
+
+                        if (c1 == null || c2 == null) {
+                            throw new IllegalArgumentException("Preencha as duas cartas.");
+                        }
+
+                        List<Carta> maoHeroi = List.of(c1, c2);
+                        Carta f1 = CardParser.parse(campoFlop1.getText());
+                        Carta f2 = CardParser.parse(campoFlop2.getText());
+                        Carta f3 = CardParser.parse(campoFlop3.getText());
+
+
+                        List<Carta> cartasDaMesa = new ArrayList<>();
+                        if (f1 != null) cartasDaMesa.add(f1);
+                        if (f2 != null) cartasDaMesa.add(f2);
+                        if (f3 != null) cartasDaMesa.add(f3);
+
+                        if (cartasDaMesa.size() < 3) {
+                            throw new IllegalArgumentException("Preencha as 3 cartas do flop");
+                        }
+                        Carta t = CardParser.parse(campoTurn.getText());
+                        Carta r = CardParser.parse(campoRiver.getText());
+                        if (t != null) cartasDaMesa.add(t);
+                        if (r != null) cartasDaMesa.add(r);
+
+                        List<Carta> cartasCompletas = new ArrayList<>(maoHeroi);
+                        cartasCompletas.addAll(cartasDaMesa);
+
+                        ResultadoMao maoAtual = avaliador.avaliarMao(cartasCompletas);
+
+                        int NUMERO_SIMULACOES = 30000;
+                        double equidade = calculadoraEquidade.calcularEquidade(maoHeroi, cartasDaMesa, NUMERO_SIMULACOES);
+
+                        String resultadoFinal = String.format(
+                                "Mão atual: %s | Equidade: %.2f%%",
+                                maoAtual.getTipoMao(), (equidade * 100)
+                        );
+
+                        if (cartasDaMesa.size() < 5) {
+                            DrawAnalysis analiseOuts = calculadoraDeOuts.calcularDraws(maoHeroi, cartasDaMesa);
+                            String resumoOuts = analiseOuts.getResumo();
+                            int totalUnicoOuts = analiseOuts.getTotalUnicoOuts();
+
+                            int chance = (cartasDaMesa.size() == 3) ? (totalUnicoOuts * 4) : (totalUnicoOuts * 2);
+                            resultadoFinal += String.format(" | Outs (%d): %s (aprox. %d%%)", totalUnicoOuts, resumoOuts, chance);
+                        }
+                        return resultadoFinal;
+                    }
+
+                    @Override
+                    protected void done() {
+                        try {
+                            String resultado = get();
+                            labelResultadoPosFlop.setText(resultado);
+                        }catch (Exception ex){
+                        labelResultadoPosFlop.setText("Erro" + ex.getCause().getMessage());
+                        }finally {
+                            botaoAnalisarPostFlop.setEnabled(true);
+                        }
+                    }
+                };
+                worker.execute();
+            }
+        });
+        /*botaoAnalisarPostFlop.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
 
@@ -168,6 +243,7 @@ public class PokerGUI {
                     ResultadoMao maoAtual = avaliador.avaliarMao(cartasCompletas);
 
                     int NUMERO_SIMULACOES = 30000;
+
                     double equidade = calculadoraEquidade.calcularEquidade(maoHeroi, cartasDaMesa,NUMERO_SIMULACOES);
 
                     String resultadoFinal = String.format(
@@ -190,9 +266,9 @@ public class PokerGUI {
                 } catch (Exception ex) {
                     labelResultadoPosFlop.setText("ERRO: " + ex.getMessage());
                 }
-                return 0;
+
             }
-        });
+        });*/
 
         janela.add(painelPreFlop, BorderLayout.NORTH);
         janela.add(painelMesa, BorderLayout.CENTER);
