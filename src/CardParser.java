@@ -31,10 +31,10 @@ public class CardParser {
 
         switch (naipeStr) {
 
-            case "C": naipe = Naipe.COPAS; break;
-            case "P": naipe = Naipe.PAUS; break;
-            case "O": naipe = Naipe.OUROS; break;
-            case "E": naipe = Naipe.ESPADAS; break;
+            case "H": naipe = Naipe.COPAS; break;//H hearts
+            case "C": naipe = Naipe.PAUS; break;//C clubs
+            case "D": naipe = Naipe.OUROS; break;//D diamonds
+            case "S": naipe = Naipe.ESPADAS; break;//S spades
         }
         if (valor != null && naipe != null) {
             return new Carta(naipe, valor);

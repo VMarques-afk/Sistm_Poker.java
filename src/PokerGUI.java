@@ -10,12 +10,12 @@ import java.util.List;
 
 public class PokerGUI {
 
-    private static GtoAdvisor advisorGTO = new GtoAdvisor();
-    private static HandEvaluator avaliador = new HandEvaluator();
-    private static OutsCalculator calculadoraDeOuts = new OutsCalculator(avaliador);
-    private static EquityCalculator calculadoraEquidade = new EquityCalculator(avaliador);
+    private GtoAdvisor advisorGTO = new GtoAdvisor();
+    private HandEvaluator avaliador = new HandEvaluator();
+    private OutsCalculator calculadoraDeOuts = new OutsCalculator(avaliador);
+    private EquityCalculator calculadoraEquidade = new EquityCalculator(avaliador);
 
-    public static void main(String[] args) {
+    public PokerGUI() {
 
         JFrame janela = new JFrame("Meu Assistente de Poker");
         janela.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -193,9 +193,9 @@ public class PokerGUI {
                         try {
                             String resultado = get();
                             labelResultadoPosFlop.setText(resultado);
-                        }catch (Exception ex){
-                        labelResultadoPosFlop.setText("Erro" + ex.getCause().getMessage());
-                        }finally {
+                        } catch (Exception ex) {
+                            labelResultadoPosFlop.setText("Erro" + ex.getCause().getMessage());
+                        } finally {
                             botaoAnalisarPostFlop.setEnabled(true);
                         }
                     }
@@ -279,4 +279,12 @@ public class PokerGUI {
         janela.setVisible(true);
     }
 
+    public static void main(String[] args){
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                new PokerGUI();
+            }
+        });
+    }
 }
