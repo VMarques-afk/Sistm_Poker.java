@@ -116,7 +116,7 @@ public class HandEvaluator {
         int kickersNecessarios = 3;
         int kickersDisponiveis = valoresOrdenados.size() - 2;
         int numKickers = Math.min(kickersNecessarios, kickersDisponiveis);
-        if(numKickers > 0) {
+        if (numKickers > 0) {
             maoFinal.addAll(getKickers(valoresOrdenados, List.of(valorDoPar), numKickers));
         }
         return new ResultadoMao(TipoMao.UM_PAR, maoFinal);
@@ -125,26 +125,26 @@ public class HandEvaluator {
 
     private ResultadoMao identificarTrinca(Map<Valor, Integer> contagem, List<Valor> valoresOrdenados) {
 
-         if (contagem.containsValue(3) && !contagem.containsValue(2)) {
-        Valor valorDaTrinca = null;
-        for (Map.Entry<Valor, Integer> entry : contagem.entrySet()) {
-            if (entry.getValue() == 3) {
-                valorDaTrinca = entry.getKey();
-                break;
+        if (contagem.containsValue(3) && !contagem.containsValue(2)) {
+            Valor valorDaTrinca = null;
+            for (Map.Entry<Valor, Integer> entry : contagem.entrySet()) {
+                if (entry.getValue() == 3) {
+                    valorDaTrinca = entry.getKey();
+                    break;
+                }
             }
-        }
-        if (valorDaTrinca == null) return null;
+            if (valorDaTrinca == null) return null;
 
-        List<Valor> maoFinal = new ArrayList<>();
+            List<Valor> maoFinal = new ArrayList<>();
 
-        maoFinal.add(valorDaTrinca);
-        int kickersNecessarios = 2;
-        int kickersDisponiveis = valoresOrdenados.size() - 3;
-        int numKickers = Math.min(kickersNecessarios, kickersDisponiveis);
-        if (numKickers > 0) {
-            maoFinal.addAll(getKickers(valoresOrdenados, List.of(valorDaTrinca), numKickers));
-        }
-        return new ResultadoMao(TipoMao.TRINCA, maoFinal);
+            maoFinal.add(valorDaTrinca);
+            int kickersNecessarios = 2;
+            int kickersDisponiveis = valoresOrdenados.size() - 3;
+            int numKickers = Math.min(kickersNecessarios, kickersDisponiveis);
+            if (numKickers > 0) {
+                maoFinal.addAll(getKickers(valoresOrdenados, List.of(valorDaTrinca), numKickers));
+            }
+            return new ResultadoMao(TipoMao.TRINCA, maoFinal);
 
         } else {
             return null;
@@ -173,14 +173,14 @@ public class HandEvaluator {
 
         Valor kicker = null;
         for (Valor v : valoresOrdenados) {
-        if (!valoresDosPares.contains(v)) {
-            kicker = v;
-            break;
+            if (!valoresDosPares.contains(v)) {
+                kicker = v;
+                break;
             }
         }
-        
+
         if (kicker != null) {
-            maoFinal.add(kicker);   
+            maoFinal.add(kicker);
         } else if (!valoresOrdenados.isEmpty() && valoresDosPares.size() > 2) {
             maoFinal.add(valoresDosPares.get(2));
         }
@@ -229,7 +229,7 @@ public class HandEvaluator {
         return null;
     }
 
-    private ResultadoMao identificarFlush(Map<Naipe, Integer> contagem,List<Carta> cartas) {
+    private ResultadoMao identificarFlush(Map<Naipe, Integer> contagem, List<Carta> cartas) {
 
         Naipe naipeDoFlush = null;
         for (Map.Entry<Naipe, Integer> entry : contagem.entrySet()) {
@@ -291,7 +291,7 @@ public class HandEvaluator {
     }
 
     private ResultadoMao identificarQuadra(Map<Valor, Integer> contagem, List<Valor> valoresOrdenados) {
-        if(!contagem.containsValue(4)) {
+        if (!contagem.containsValue(4)) {
             return null;
         }
 
@@ -308,7 +308,7 @@ public class HandEvaluator {
 
         int kickersNecessarios = 1;
         int kickersDisponiveis = valoresOrdenados.size() - 4;
-        int numKickers = Math.min(kickersNecessarios,  kickersDisponiveis);
+        int numKickers = Math.min(kickersNecessarios, kickersDisponiveis);
         if (numKickers > 0) {
             maoFinal.addAll(getKickers(valoresOrdenados, List.of(valorDaQuadra), numKickers));
         }
@@ -316,11 +316,11 @@ public class HandEvaluator {
         return new ResultadoMao(TipoMao.QUADRA, maoFinal);
     }
 
-    private ResultadoMao identificarStraightFlush(Map<Naipe, Integer> contagemNaipes, List<Carta> cartas){
+    private ResultadoMao identificarStraightFlush(Map<Naipe, Integer> contagemNaipes, List<Carta> cartas) {
 
         Naipe naipeDoFlush = null;
-        for (Map.Entry<Naipe, Integer> entry : contagemNaipes.entrySet()){
-            if(entry.getValue() >= 5) {
+        for (Map.Entry<Naipe, Integer> entry : contagemNaipes.entrySet()) {
+            if (entry.getValue() >= 5) {
                 naipeDoFlush = entry.getKey();
                 break;
             }
@@ -336,7 +336,7 @@ public class HandEvaluator {
 
         List<Valor> sequencia = findStraightInList(cartasDoFlush);
 
-        if (sequencia == null){
+        if (sequencia == null) {
             return null;
         }
 
@@ -370,7 +370,7 @@ public class HandEvaluator {
             int v4 = valoresNumericos.get(i - 3);
             int v5 = valoresNumericos.get(i - 4);
 
-            if (v1 == v2 + 1 && v2 == v3 + 1 && v3 == v4 + 1 && v4 == v5 + 1 ) {
+            if (v1 == v2 + 1 && v2 == v3 + 1 && v3 == v4 + 1 && v4 == v5 + 1) {
                 return List.of(
                         Valor.values()[v1 - 2],
                         Valor.values()[v2 - 2],

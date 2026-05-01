@@ -21,10 +21,10 @@ public class PreflopHand {
             this.valorAlto = v2;
             this.valorBaixo = v1;
         }
-        this.notacao = costruirNotacao();
+        this.notacao = construirNotacao();
     }
 
-    private String costruirNotacao() {
+    private String construirNotacao() {
 
         String vAltoStr = this.valorAlto.getNotacao();
         String vBaixoStr = this.valorBaixo.getNotacao();

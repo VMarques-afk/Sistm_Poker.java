@@ -1,12 +1,5 @@
 import java.util.Objects;
 
-/*enum Naipe {
-        PAUS,
-        COPAS,
-        ESPADAS,
-        OUROS
-    }*/
-
     public class Carta {
         private final Naipe naipe;
         private final Valor valor;

@@ -57,9 +57,4 @@ public class ResultadoMao implements Comparable<ResultadoMao> {
 
         return 0;
     }
-
-   /* @Override
-    public String toString() {
-        return tipoMao + " com valores " + valoresDaMao;
-    }*/
 }

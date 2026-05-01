@@ -1,6 +1,5 @@
 import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -41,19 +40,19 @@ public class DrawAnalysis{
         List<String> resumos = new ArrayList<>();
 
         if (!outsFlush.isEmpty()) {
-            resumos.add(outsFlush.size() + "outs para Flush");
+            resumos.add(outsFlush.size() + " outs para Flush");
         }
 
         if (!outsStraight.isEmpty()) {
-            resumos.add(outsStraight.size() + "outs para Straight");
+            resumos.add(outsStraight.size() + " outs para Straight");
         }
 
         if (!outsParaParTrincaQuadra.isEmpty()) {
-            resumos.add(outsParaParTrincaQuadra.size() + "outs para Par/Trinca/Quadra");
+            resumos.add(outsParaParTrincaQuadra.size() + " outs para Par/Trinca/Quadra");
         }
 
-          if (!outsParaFullHouse.isEmpty()) {
-            resumos.add(outsParaFullHouse.size() + "outs para Full House");
+        if (!outsParaFullHouse.isEmpty()) {
+            resumos.add(outsParaFullHouse.size() + " outs para Full House");
         }
           return String.join(" | ", resumos);
     }

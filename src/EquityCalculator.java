@@ -67,21 +67,5 @@ public class EquityCalculator {
         return equidade;
 
     }
-           /* int forcaHeroi222222 = avaliador.avaliarMao(maoFinalHeroi).getForca();
-            int forcaVilao = avaliador.avaliarMao(maoFinalVilao).getForca();
-
-            if (forcaHeroi > forcaVilao) {
-                vitoriasHeroi++;
-
-            } else if (forcaHeroi == forcaVilao) {
-                empates++;
-            }
-
-        }
-        double equidade = (vitoriasHeroi + (empates / 2.0)) / numeroDeSimulacoes;
-        return equidade;
-         correção
-         */
-
 
 }

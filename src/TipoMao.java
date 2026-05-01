@@ -1,15 +1,3 @@
-/* public enum TipoMao {
-    CARTA_ALTA,      // High Card
-    UM_PAR,          // One Pair
-    DOIS_PARES,      // Two Pair
-    TRINCA,          // Three of a Kind
-    STRAIGHT,        // Straight
-    FLUSH,           // Flush
-    FULL_HOUSE,      // Full House
-    QUADRA,          // Four of a Kind
-    STRAIGHT_FLUSH,  // Straight Flush
-    ROYAL_FLUSH      // Royal Flush
-} */
 
 public enum TipoMao {
 
