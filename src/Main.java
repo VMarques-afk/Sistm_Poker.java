@@ -2,12 +2,11 @@ import com.sun.net.httpserver.HttpServer;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpExchange;
 
-import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
-import java.net.URI;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
@@ -71,21 +70,29 @@ public class Main {
 
         DatabaseManager.inicializarBanco();
 
-        HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
+        int porta = Integer.parseInt(System.getenv().getOrDefault("PORT", "8080"));
+        HttpServer server = HttpServer.create(new InetSocketAddress(porta), 0);
 
         server.createContext("/", new HttpHandler() {
             @Override
             public void handle(HttpExchange exchange) throws IOException {
-                File htmlFile = new File("poker-advisor-ui.html");
-                if (!htmlFile.exists()) {
-                    String erro = "<h1>Erro 404</h1> <p>Arquivo poker-advisor-ui.html não encontrado.</p>";
-                    exchange.sendResponseHeaders(404, erro.length());
+                byte[] response = null;
+                // Tenta carregar do JAR (produção), depois do sistema de arquivos (desenvolvimento)
+                InputStream is = Main.class.getResourceAsStream("/poker-advisor-ui.html");
+                if (is != null) {
+                    response = is.readAllBytes();
+                } else {
+                    File htmlFile = new File("poker-advisor-ui.html");
+                    if (htmlFile.exists()) response = Files.readAllBytes(htmlFile.toPath());
+                }
+                if (response == null) {
+                    String erro = "<h1>Erro: poker-advisor-ui.html não encontrado.</h1>";
+                    exchange.sendResponseHeaders(404, erro.getBytes("UTF-8").length);
                     OutputStream os = exchange.getResponseBody();
-                    os.write(erro.getBytes());
+                    os.write(erro.getBytes("UTF-8"));
                     os.close();
                     return;
                 }
-                byte[] response = Files.readAllBytes(htmlFile.toPath());
                 exchange.getResponseHeaders().set("Content-Type", "text/html; charset=UTF-8");
                 exchange.sendResponseHeaders(200, response.length);
                 OutputStream os = exchange.getResponseBody();
@@ -295,10 +302,6 @@ public class Main {
 
         server.setExecutor(null);
         server.start();
-        System.out.println("Servidor online. Port 8080");
-
-        if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
-            Desktop.getDesktop().browse(new URI("http://localhost:8080"));
-        }
+        System.out.println("Servidor online na porta " + porta);
     }
 }
