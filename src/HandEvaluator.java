@@ -256,37 +256,35 @@ public class HandEvaluator {
     }
 
     private ResultadoMao identificarFullHouse(Map<Valor, Integer> contagem) {
-
-        if (!contagem.containsValue(3) || !contagem.containsValue(2)) {
+        if (!contagem.containsValue(3)) {
             return null;
         }
 
         Valor valorDaTrinca = null;
-        Valor valorDoPar = null;
-
         for (Map.Entry<Valor, Integer> entry : contagem.entrySet()) {
             if (entry.getValue() == 3) {
-                valorDaTrinca = entry.getKey();
-                break;
+                if (valorDaTrinca == null || entry.getKey().getValorNumerico() > valorDaTrinca.getValorNumerico()) {
+                    valorDaTrinca = entry.getKey();
+                }
             }
         }
 
+        Valor valorDoPar = null;
         for (Map.Entry<Valor, Integer> entry : contagem.entrySet()) {
-            if ((entry.getValue() == 2 || entry.getValue() == 3) && entry.getKey() != valorDaTrinca) {
+            if (entry.getKey() != valorDaTrinca && entry.getValue() >= 2) {
                 if (valorDoPar == null || entry.getKey().getValorNumerico() > valorDoPar.getValorNumerico()) {
                     valorDoPar = entry.getKey();
                 }
             }
         }
 
-        if (valorDaTrinca == null || valorDoPar == null) {
+        if (valorDoPar == null) {
             return null;
         }
 
         List<Valor> maoFinal = new ArrayList<>();
         maoFinal.add(valorDaTrinca);
         maoFinal.add(valorDoPar);
-
         return new ResultadoMao(TipoMao.FULL_HOUSE, maoFinal);
     }
 

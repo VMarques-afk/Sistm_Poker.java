@@ -1,68 +1,125 @@
-**Assistente de Poker GTO e calculadora de equidade**
+# Poker Advisor — Tracker Edition
 
-Um aplicativo desktop desenvolvido para auxiliar jogadores de poker na tomada de decisões estratégicas e analise matematicas das mãos.
+Assistente estratégico de poker com interface web, motor de simulação Monte Carlo e histórico de partidas.
 
-O projeto combina tabelas de estratégia GTO (Game theory optimal) para o jogo pré-flop com um poderoso motor de simulação de Monte Carlo para calculos de equidade pós-flop.
+O sistema combina tabelas GTO (Game Theory Optimal) para decisões pré-flop com um motor de cálculo de equidade pós-flop, análise de outs e uma calculadora de all-in baseada em pot odds — tudo acessível pelo navegador sem instalação de interface gráfica.
 
-Demonstração
+---
 
-**Funcionalidades principais**
+## Como iniciar
 
-**1. Consultar GTO(pré-flop)**
+**Pré-requisitos**
+- Java JDK 17 ou superior
+- Biblioteca SQLite JDBC (já inclusa em `lib/sqlite-jdbc-3.41.2.1.jar`)
 
-Entrada: Posição do jogador (UTG, MP, CO, BTN, SB, BB) e as duas cartas da mão.
-Lógica: Utiliza tabelas pré-definidas em memória para sugerir a melhor ação matemática (RAISE, CALL, FOLD).
-Tratamento de dados: Reconhece automaticamente se a mão é "Suited" (mesmo naipe) ou "Offsuit".
+**Rodando o projeto**
 
-**2. Calculadora de equidade (Pós-flop)**
+1. Clone ou baixe o repositório
+2. Compile e rode a classe `Main.java` pela IDE (IntelliJ IDEA recomendado), ou via terminal:
 
-Simulação de Monte Carlo: Ao analisar o flop, turn e river, o sistema roda 100.000 simulações de jogos virtuais em milisegundos.
-Cenário realista: Calcula a porcentagem exata de vitória da sua mão contra um oponente com uma mão aleátoria.
+```bash
+javac -cp lib/sqlite-jdbc-3.41.2.1.jar src/*.java -d out
+java -cp "out;lib/sqlite-jdbc-3.41.2.1.jar" Main
+```
 
-**3. Analisador de Outs(vidente)**
+3. O servidor sobe na porta **8080** e o navegador abre automaticamente em `http://localhost:8080`
+4. O banco de dados `historico_poker.db` é criado automaticamente na primeira execução
 
-Relatório Detalhado: Não apenas conta os outs, mas diz exatamente o qu eles formam.
-Exemplo: "9 outs para Flush | 3 outs para trinca".
-Cálculo de Odds: Estima porcentagem de chance de melhorar a mão na proxima carta.
+---
 
-**4. Interface Gráfica(GUI)**
+## Como usar
 
-Interface amigavel construida no Java Swing
-Validação de erros de digitação.
-Fluxo continuo de analise: Flop -> turn -> river.
+### 1. Escolha sua posição
+Clique em uma das 6 posições na mesa visual: **UTG, MP, CO, BTN, SB ou BB**
 
+### 2. Selecione suas cartas
+Clique em **Escolher Cartas** para abrir o seletor. Escolha suas 2 cartas da mão.
 
-**Tecnologias e Conceitos Utilizados**
+### 3. Ver Recomendação (pré-flop)
+Clique em **Ver Recomendação** para consultar a tabela GTO. O sistema informa se a jogada correta é **Aumentar, Pagar, Passar ou Desistir** com base na sua posição e mão.
 
-Este projeto ofi construido do zero para aplicar conceitos fundamentais e avançados de programação orientada a objetos (POO):
+### 4. Simule o Board
+- Clique em **Adicionar Flop** para selecionar as 3 primeiras cartas da mesa
+- Após o flop, os botões de **Turn** e **River** são liberados automaticamente
+- A simulação roda automaticamente a cada vez que o board é atualizado
 
-**Java Core**: Logica principal.
-**Java Swing**:  Criação da interface gráfica(JFrame, JPanel, Layout Managers).
-**Collections Framework**: Uso intensivo de List, Map(HasMap para tabelas GTO) e Set (para contagem de outs unicos).
-**Enums:** Para representar Naipes, valores, posições e tipos de mão, garantindo segurança de tipos.
-**Algoritmos de ordenação:** Uso de Stream API e Comparator para ordenar cartas e identificar Kickers.
-**Tratamento de exceções:** Uso de try-catch para blindar a aplicação contra erros de input.
+### 5. Resultados da simulação
+Após cada simulação você verá:
+- **Chance de ganhar (%)** — sua probabilidade de vitória
+- **Chance do oponente (%)** — probabilidade do adversário
+- **Barra visual** — proporção entre os dois
+- **Sua mão atual** — ex: "Dois Pares", "Flush", "Trinca"
+- **Outs disponíveis** — cartas que ainda podem melhorar sua mão
 
-Estrutura do projeto
+### 6. Calculadora de All-In
+Aparece automaticamente após a simulação. Informe:
+- **Pote atual** — total de fichas já na mesa
+- **Valor do Call** — quanto você precisa pagar para chamar o all-in
 
-O código é modularizado em cérebros especialistas
+O sistema calcula e exibe:
+- Equidade mínima necessária para o all-in ser lucrativo
+- Sua equidade atual
+- EV esperado em fichas
+- Veredicto: **✓ VALE O ALL-IN** ou **✗ NÃO VALE O ALL-IN**
 
-PokerGUI.java: A interface visual é controle de eventos.
-HandEvaluator.java: O HandEvaluator contem a lógica complexa para identificar qualquer mão de poker e desempatar usando kickers.
-EquityCalculator.java: o motor de simulação estatistica.
-OutsCalculator.java: O modulo analitico que prevê cartas futuras.
-GtoAdvisor.java: o banco de dados estrategico.
-CardParser.java: Utilitario estatico para converter texto em objetos.
+### 7. Nova Mão
+Clique em **↺ Nova Mão** no canto superior direito para limpar tudo e começar uma nova rodada.
 
-Como Executar
+---
 
-Pré-requisitos
-Java JDK instalado( => 17)
+## Perfis de oponente
 
-Rodando o executavel (.jar)
+| Perfil | Descrição | Range aproximado |
+|---|---|---|
+| **Conservador** | Só entra com mãos premium | TT+, AJS+, AQO+ |
+| **Agressivo** | Joga pares médios e conectores suited | 55+, Ax suited, conectores |
+| **Maníaco** | Joga quase qualquer mão | Pares, Ás qualquer, conectores baixos |
 
-1.Baixe o arquivo "Sistm_Poker.jar".
-2.Dê um duplo clique no arquivo ou rode no terminal:
-bash
-java -jar Sistm_Poker.jar
+---
 
+## Endpoints da API
+
+| Endpoint | Descrição |
+|---|---|
+| `GET /` | Serve a interface web |
+| `GET /api/gto?pos=BTN&mao=AKS` | Retorna recomendação GTO para posição + mão |
+| `GET /api/equidade?hero=...&board=...&vilao=tight` | Calcula equidade via Monte Carlo (10.000 simulações) + mão atual + outs |
+| `GET /api/outs?hero=...&board=...` | Retorna análise de outs da mão |
+| `GET /api/historico` | Retorna as últimas 20 partidas salvas em JSON |
+
+---
+
+## Estrutura do projeto
+
+```
+src/
+├── Main.java             — Servidor HTTP e roteamento dos endpoints
+├── HandEvaluator.java    — Identifica e compara os 10 tipos de mão
+├── EquityCalculator.java — Motor de simulação Monte Carlo
+├── OutsCalculator.java   — Análise de cartas que melhoram a mão
+├── RangeBuilder.java     — Converte notação de range em combinações reais
+├── GtoAdvisor.java       — Tabelas GTO para as 6 posições
+├── DatabaseManager.java  — Persistência do histórico em SQLite
+├── DrawAnalysis.java     — Estrutura de dados para outs
+├── ResultadoMao.java     — Resultado avaliado de uma mão com comparação
+├── TipoMao.java          — Enum dos 10 tipos de mão (Carta Alta → Royal Flush)
+├── Carta.java            — Representa uma carta (naipe + valor)
+├── Baralho.java          — Baralho de 52 cartas
+├── Valor.java            — Enum dos 13 valores com valor numérico
+├── Naipe.java            — Enum dos 4 naipes
+├── Posicao.java          — Enum das 6 posições
+└── AcaoGTO.java          — Enum das ações: RAISE, CALL, FOLD, CHECK
+poker-advisor-ui.html     — Interface web completa (HTML + CSS + JS)
+lib/
+└── sqlite-jdbc-3.41.2.1.jar
+```
+
+---
+
+## Tecnologias
+
+- **Java 17+** — lógica principal e servidor HTTP (`com.sun.net.httpserver`)
+- **SQLite** via JDBC — persistência do histórico de partidas
+- **Monte Carlo** — 10.000 simulações por cálculo de equidade
+- **HTML5 / CSS3 / JavaScript vanilla** — interface web sem frameworks externos
+- **Google Fonts** — tipografia (Cormorant Garamond, JetBrains Mono, Outfit)
