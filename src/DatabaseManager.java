@@ -22,14 +22,19 @@ public class DatabaseManager {
         try (Connection conn = DriverManager.getConnection(URL);
              Statement stmt = conn.createStatement()) {
             stmt.execute(sql);
+            try {
+                stmt.execute("ALTER TABLE historico ADD COLUMN session_id TEXT NOT NULL DEFAULT ''");
+            } catch (SQLException e) {
+                // Coluna já existe
+            }
             System.out.println("✅ Banco de Dados SQLite inicializado e pronto para salvar mãos!");
         } catch (SQLException e) {
             System.out.println("❌ Erro ao criar banco de dados: " + e.getMessage());
         }
     }
 
-    public static void salvarJogada(String maoHeroi, String board, String perfilVilao, double equidade) {
-        String sql = "INSERT INTO historico(mao_heroi, board, perfil_vilao, equidade) VALUES(?,?,?,?)";
+    public static void salvarJogada(String maoHeroi, String board, String perfilVilao, double equidade, String sessionId) {
+        String sql = "INSERT INTO historico(mao_heroi, board, perfil_vilao, equidade, session_id) VALUES(?,?,?,?,?)";
 
         try (Connection conn = DriverManager.getConnection(URL);
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -38,6 +43,7 @@ public class DatabaseManager {
             pstmt.setString(2, board);
             pstmt.setString(3, perfilVilao);
             pstmt.setDouble(4, equidade);
+            pstmt.setString(5, sessionId);
             pstmt.executeUpdate();
 
             System.out.println("💾 Simulação salva no histórico com sucesso!");
@@ -46,14 +52,16 @@ public class DatabaseManager {
         }
     }
 
-    public static String buscarHistoricoJson() {
-        String sql = "SELECT * FROM historico ORDER BY id DESC LIMIT 20"; // Pega as últimas 20 mãos
+    public static String buscarHistoricoJson(String sessionId) {
+        String sql = "SELECT * FROM historico WHERE session_id = ? ORDER BY id DESC LIMIT 20";
         StringBuilder jsonBuilder = new StringBuilder();
         jsonBuilder.append("[");
 
         try (Connection conn = DriverManager.getConnection(URL);
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, sessionId);
+            ResultSet rs = pstmt.executeQuery();
 
             boolean isFirst = true;
             while (rs.next()) {

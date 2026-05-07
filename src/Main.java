@@ -151,6 +151,7 @@ public class Main {
                 String heroParam = "";
                 String boardParam = "";
                 String vilaoParam = "tight";
+                String sessaoParam = "";
 
                 if (query != null) {
                     for (String param : query.split("&")) {
@@ -159,6 +160,7 @@ public class Main {
                             if (par[0].equals("hero")) heroParam = java.net.URLDecoder.decode(par[1], "UTF-8");
                             if (par[0].equals("board")) boardParam = java.net.URLDecoder.decode(par[1], "UTF-8");
                             if (par[0].equals("vilao")) vilaoParam = par[1];
+                            if (par[0].equals("sessao")) sessaoParam = par[1];
                         }
                     }
                 }
@@ -196,7 +198,7 @@ public class Main {
 
                     double equidadeFinal = calculadoraEquidade.calcularEquidadeComRange(maoHeroi, board, 10000, rangeVilao);
 
-                    DatabaseManager.salvarJogada(heroParam, boardParam, vilaoParam, equidadeFinal);
+                    DatabaseManager.salvarJogada(heroParam, boardParam, vilaoParam, equidadeFinal, sessaoParam);
 
                     String maoAtualStr = "";
                     String outsResumo = "";
@@ -288,7 +290,15 @@ public class Main {
             @Override
             public void handle(HttpExchange exchange) throws IOException {
                 try {
-                    String json = DatabaseManager.buscarHistoricoJson();
+                    String query = exchange.getRequestURI().getQuery();
+                    String sessao = "";
+                    if (query != null) {
+                        for (String param : query.split("&")) {
+                            String[] par = param.split("=");
+                            if (par.length > 1 && par[0].equals("sessao")) sessao = par[1];
+                        }
+                    }
+                    String json = DatabaseManager.buscarHistoricoJson(sessao);
                     exchange.getResponseHeaders().set("Content-Type", "application/json; charset=UTF-8");
                     exchange.sendResponseHeaders(200, json.getBytes("UTF-8").length);
                     OutputStream os = exchange.getResponseBody();

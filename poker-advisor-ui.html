@@ -289,6 +289,12 @@
     let perfilVilaoSelecionado = 'tight'; let contextoAtual = ''; let qtdCartasNecessarias = 0; let gavetaSelecaoTemporaria = [];
     let equidadeAtual = null;
 
+    function getSessionId() {
+        let sid = localStorage.getItem('poker_session_id');
+        if (!sid) { sid = crypto.randomUUID(); localStorage.setItem('poker_session_id', sid); }
+        return sid;
+    }
+
     const btnAnalisar = document.getElementById('btn-analisar'); const displayResultado = document.getElementById('resultado-api');
     const btnOpenFlop = document.getElementById('btn-open-flop'); const btnOpenTurn = document.getElementById('btn-open-turn');
     const btnOpenRiver = document.getElementById('btn-open-river'); const flopSlots = document.getElementById('flop-slots');
@@ -427,7 +433,7 @@
         const heroStr = maoHeroi.map(c => c.valor + c.naipe).join(',');
         const boardStr = cartasBoard.filter(c => c).map(c => c.valor + c.naipe).join(',');
 
-        fetch(`/api/equidade?hero=${encodeURIComponent(heroStr)}&board=${encodeURIComponent(boardStr)}&vilao=${perfilVilaoSelecionado}`)
+        fetch(`/api/equidade?hero=${encodeURIComponent(heroStr)}&board=${encodeURIComponent(boardStr)}&vilao=${perfilVilaoSelecionado}&sessao=${getSessionId()}`)
             .then(r => r.json())
             .then(dados => {
                 equidadeAtual = dados.equidade;
@@ -503,7 +509,7 @@
     }
 
     function carregarHistorico() {
-        fetch('/api/historico')
+        fetch(`/api/historico?sessao=${getSessionId()}`)
             .then(r => r.json())
             .then(dados => {
                 const container = document.getElementById('history-container');
